@@ -11,7 +11,7 @@ export function Beranda() {
   const [inputEditVisible, setInputEditVisible] = useState(false)
   const [idItem, setIdItem] = useState(null)
   const [idEditItem, setIdEditItem] = useState(0)
-  const fillValue = useRef(null)
+  const [counter, setCounter] = useState(0)
  
  
   const handleInput = (name, value)=>{
@@ -19,6 +19,7 @@ export function Beranda() {
   }
   
   const handlePress = ()=>{
+    setCounter(prev=> prev + 1)
     setInputVisible(true)
     
   }
@@ -31,7 +32,7 @@ export function Beranda() {
       alert("translate wajib diisi")
       return
     }
-    setItems([...items, { 
+    setItems([...items, { id: counter,
       frasa: input.frasa,
       translate: input.translate}])
       setInputVisible(false)
@@ -88,7 +89,7 @@ export function Beranda() {
     
        {items.map((data, index)=>(
          <>
-      <Shadow key={index}
+      <Shadow key={data.id}
         style={{margin: 10}}
         distance={1} // seberapa jauh bayangan
         startColor={"rgba(0,0,0)"} // warna awal shadow
@@ -217,7 +218,7 @@ export function Beranda() {
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
-      <TextInput ref={fillValue} style={styles.input}
+      <TextInput style={styles.input}
       placeholder="Enter Frasa"
       onChangeText={(value)=>handleInput('frasa',value)}/>
       
