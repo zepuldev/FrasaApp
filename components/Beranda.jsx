@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {FontAwesome} from '@expo/vector-icons'
-import {useState, useRef} from 'react'
+import React, {useState, useRef} from 'react'
 import * as Speech from 'expo-speech'
 export function Beranda() {
   const [input, setInput] = useState({})
@@ -88,8 +88,8 @@ export function Beranda() {
          <View>
     
        {items.map((data, index)=>(
-         <>
-      <Shadow key={data.id}
+         <React.Fragment key={data.id}>
+      <Shadow
         style={{margin: 10}}
         distance={1} // seberapa jauh bayangan
         startColor={"rgba(0,0,0)"} // warna awal shadow
@@ -144,7 +144,7 @@ export function Beranda() {
             
 
       </Shadow>
-      </>
+      </React.Fragment>
       ))}
 
     </View>
