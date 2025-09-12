@@ -5,10 +5,13 @@ import {useState} from 'react'
 import * as Speech from 'expo-speech'
 export function Beranda() {
   const [input, setInput] = useState({})
+  const [inputEdit, setEditInput] = useState({})
   const [items, setItems] = useState([])
+  const [itemsUpdate, setItemsUpdate] = useState([...items])
   const [inputVisible, setInputVisible] = useState(false)
   const [inputEditVisible, setInputEditVisible] = useState(false)
   const [idItem, setIdItem] = useState(0)
+  const [idEditItem, setIdEditItem] = useState(0)
   const [bicara, setBicara] = useState(true)
  
  
@@ -54,14 +57,21 @@ export function Beranda() {
     Speech.stop()
   }
   
-  const handlePressEdit = (id) =>{
-    setItems(prev => prev.map((data,index)=>{
-     return  id === index? {...items, frasa: "test"}:data
+  const handlePressEdit = () =>{
+    setItems(prev => prev.map((data, index)=>{
+      return idEditItem === index? {...data, frasa: inputEdit.frasa, translate: inputEdit.translate }: data
     }))
+    setInputEditVisible(false)
+
   }
   
-  const handleEditOpen = ()=> {
+  const handleEditOpen = (id)=> {
+    setIdEditItem(id)
     setInputEditVisible(true)
+  }
+  
+  const handleEditInput = (name, value)=> {
+    setEditInput(prev => ({[name] : [value]}))
   }
 
   
@@ -106,6 +116,7 @@ export function Beranda() {
         <Text>{data.translate}</Text>
         </View>
       </View>
+
         </View>
       </View>
       <View style={{
@@ -116,7 +127,7 @@ export function Beranda() {
       <View style={{
         marginRight: 10
       }}>
-      <FontAwesome name='pencil' size={19} onPress={handleEditOpen}/>
+      <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(index)}/>
       </View>
       <View>
       <FontAwesome name='trash' size={19} onPress={()=>{handleDelete(index)}}/>
@@ -142,14 +153,12 @@ export function Beranda() {
       backgroundColor: '#161414b8'
     }}>
       <TextInput style={styles.input}
-      placeholder="Enter Frasa"
-      value={data.frasa.toString()}
-      onChangeText={(value)=>handleInput('frasa',value)}/>
-      {console.log(data.frasa)}
+      placeholder={data.frasa.toString()}
+      onChangeText={(value)=>handleEditInput('frasa',value)}/>
      <TextInput style={styles.input}
       placeholder="Enter Translate"
       value={data.translate}
-      onChangeText={(value)=>handleInput('translate',value)}/>
+      onChangeText={(value)=>handleEditInput('translate',value)}/>
       
       <View style={{
         flexDirection: 'row',
@@ -165,11 +174,11 @@ export function Beranda() {
           textAlign: 'center',
           alignItems: 'center'
         }} 
-        onPress={handlePressEdit}>
+        onPress={()=> {handlePressEdit()}}>
         <Text style={{
           fontSize: 20,
           marginTop: 14
-        }}>Tambah</Text>
+        }}>Edit</Text>
         </TouchableOpacity>
         </View>
       <View style={{
