@@ -1,25 +1,14 @@
-import { StatusBar, StyleSheet, Text, View, TextInput, Button, TouchableOpacity, ScrollView} from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
+import { StatusBar, StyleSheet} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons'
-import {useState} from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import {Beranda} from './components/Beranda.jsx'
+import {About} from './components/About.jsx'
 
 
 export default function App() {
   
 const Drawer = createDrawerNavigator();
-
-function About(){
-  return(
-    <Text>
-    Development By: Zepul 
-    </Text>
-    )
-}
-
-
     
   
   return (

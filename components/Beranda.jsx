@@ -1,18 +1,17 @@
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {FontAwesome} from '@expo/vector-icons'
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import * as Speech from 'expo-speech'
 export function Beranda() {
   const [input, setInput] = useState({})
   const [inputEdit, setEditInput] = useState({})
   const [items, setItems] = useState([])
-  const [itemsUpdate, setItemsUpdate] = useState([...items])
   const [inputVisible, setInputVisible] = useState(false)
   const [inputEditVisible, setInputEditVisible] = useState(false)
-  const [idItem, setIdItem] = useState(0)
+  const [idItem, setIdItem] = useState(null)
   const [idEditItem, setIdEditItem] = useState(0)
-  const [bicara, setBicara] = useState(true)
+  const fillValue = useRef(null)
  
  
   const handleInput = (name, value)=>{
@@ -25,6 +24,13 @@ export function Beranda() {
   }
   
   const handlePressAdd = ()=> {
+    if(input.frasa == null){
+      alert("frasa wajib diisi")
+      return
+    }else if(input.translate == null){
+      alert("translate wajib diisi")
+      return
+    }
     setItems([...items, { 
       frasa: input.frasa,
       translate: input.translate}])
@@ -145,19 +151,17 @@ export function Beranda() {
     
      {inputEditVisible && 
         <>
-       {items.map((data, index)=>(
-              <View key={index} style={{
+ <View style={{
       width: 600,
       height: 1000,
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
       <TextInput style={styles.input}
-      placeholder={data.frasa.toString()}
+      placeholder={items[idEditItem].frasa.toString()}
       onChangeText={(value)=>handleEditInput('frasa',value)}/>
      <TextInput style={styles.input}
-      placeholder="Enter Translate"
-      value={data.translate}
+      placeholder={items[idEditItem].translate.toString()}
       onChangeText={(value)=>handleEditInput('translate',value)}/>
       
       <View style={{
@@ -201,8 +205,6 @@ export function Beranda() {
     </View>
     </View>
     </View>
-          ))
-       }
         </>
 
       }
@@ -215,7 +217,7 @@ export function Beranda() {
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
-      <TextInput style={styles.input}
+      <TextInput ref={fillValue} style={styles.input}
       placeholder="Enter Frasa"
       onChangeText={(value)=>handleInput('frasa',value)}/>
       
