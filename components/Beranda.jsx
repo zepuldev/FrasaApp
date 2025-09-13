@@ -1,12 +1,15 @@
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {FontAwesome} from '@expo/vector-icons'
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import * as Speech from 'expo-speech'
 export function Beranda() {
   const [input, setInput] = useState({})
+  const [inputFrasa, setInputFrasa] = useState(null)
+  const [inputTranslate, setInputTranslate] = useState(null)
   const [inputEdit, setEditInput] = useState({})
   const [items, setItems] = useState([])
+  const [itemsLoop, setItemsLoop] = useState([])
   const [inputVisible, setInputVisible] = useState(false)
   const [inputEditVisible, setInputEditVisible] = useState(false)
   const [idItem, setIdItem] = useState(null)
@@ -66,20 +69,19 @@ export function Beranda() {
   
   const handlePressEdit = () =>{
     setItems(prev => prev.map((data, index)=>{
-      return idEditItem === index? {...data, frasa: inputEdit.frasa, translate: inputEdit.translate }: data
+      return idEditItem === index? {...data, frasa: inputFrasa, translate: inputTranslate }: data
     }))
     setInputEditVisible(false)
-
   }
   
-  const handleEditOpen = (id)=> {
+  
+  const handleEditOpen = (data,id)=> {
     setIdEditItem(id)
+    setInputFrasa(data.frasa)
+    setInputTranslate(data.translate)
     setInputEditVisible(true)
   }
   
-  const handleEditInput = (name, value)=> {
-    setEditInput(prev => ({[name] : [value]}))
-  }
 
   
   return (
@@ -134,7 +136,7 @@ export function Beranda() {
       <View style={{
         marginRight: 10
       }}>
-      <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(index)}/>
+      <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(data, index)}/>
       </View>
       <View>
       <FontAwesome name='trash' size={19} onPress={()=>{handleDelete(index)}}/>
@@ -159,11 +161,13 @@ export function Beranda() {
       backgroundColor: '#161414b8'
     }}>
       <TextInput style={styles.input}
-      placeholder={items[idEditItem].frasa.toString()}
-      onChangeText={(value)=>handleEditInput('frasa',value)}/>
+      placeholder="Enter Frasa"
+      value={inputFrasa.toString()}
+      onChangeText={(value)=>setInputFrasa(value)}/>
      <TextInput style={styles.input}
-      placeholder={items[idEditItem].translate.toString()}
-      onChangeText={(value)=>handleEditInput('translate',value)}/>
+      placeholder="Enter Translate"
+      value={inputTranslate.toString()}
+      onChangeText={(value)=>setInputTranslate(value)}/>
       
       <View style={{
         flexDirection: 'row',
