@@ -2,19 +2,35 @@ import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, SafeAreaVi
 import {Shadow} from 'react-native-shadow-2';
 import {FontAwesome} from '@expo/vector-icons'
 import React, {useState, useRef, useEffect} from 'react'
+import {
+  initDb,
+  getAllSentence,
+  getEditSentence,
+  getDeleteSentence,
+  getInsertSentence
+} from '../database/db.js'
 import * as Speech from 'expo-speech'
 export function Beranda() {
-  const [input, setInput] = useState({})
+  const [input, setInput] = useState('')
   const [inputFrasa, setInputFrasa] = useState(null)
   const [inputTranslate, setInputTranslate] = useState(null)
   const [inputEdit, setEditInput] = useState({})
   const [items, setItems] = useState([])
-  const [itemsLoop, setItemsLoop] = useState([])
   const [inputVisible, setInputVisible] = useState(false)
   const [inputEditVisible, setInputEditVisible] = useState(false)
   const [idItem, setIdItem] = useState(null)
   const [idEditItem, setIdEditItem] = useState(0)
   const [counter, setCounter] = useState(0)
+ 
+ 
+ useEffect(()=>{
+   const setup = async ()=>{
+     await initDb()
+     const all = await getAllSentence()
+     setItems(all)
+   }
+   setup()
+ },[counter])
  
  
   const handleInput = (name, value)=>{
@@ -35,12 +51,13 @@ export function Beranda() {
       alert("translate wajib diisi")
       return
     }
-    setItems([...items, { id: counter,
-      frasa: input.frasa,
-      translate: input.translate}])
-      setInputVisible(false)
-      setInput('')
+    const frasa = input.frasa.toString()
+    const translate = input.translate.toString()
+    getInsertSentence(frasa, translate)
+    setCounter(prev => prev + 1)
+    setInputVisible(false)
   }
+  
   
   const handlePressClose = ()=>{
     setInputVisible(false)
@@ -48,7 +65,8 @@ export function Beranda() {
   }
   
   const handleDelete = (id)=>{
-    setItems((prev)=> prev.filter((_,index)=> {return index !== id}))
+    getDeleteSentence(id)
+    setCounter(prev => prev + 1)
 }
 
   const handleVoiceStart = (id) =>{
@@ -68,15 +86,17 @@ export function Beranda() {
   }
   
   const handlePressEdit = () =>{
-    setItems(prev => prev.map((data, index)=>{
-      return idEditItem === index? {...data, frasa: inputFrasa, translate: inputTranslate }: data
-    }))
+    const varInputFrasa = inputFrasa
+    const varInputTranslate = inputTranslate
+    getEditSentence(varInputFrasa, varInputTranslate, idEditItem)
+    setCounter(prev=> prev + 1)
     setInputEditVisible(false)
+    
   }
   
   
-  const handleEditOpen = (data,id)=> {
-    setIdEditItem(id)
+  const handleEditOpen = (data)=> {
+    setIdEditItem(data.id)
     setInputFrasa(data.frasa)
     setInputTranslate(data.translate)
     setInputEditVisible(true)
@@ -95,7 +115,7 @@ export function Beranda() {
         style={{margin: 10}}
         distance={1} // seberapa jauh bayangan
         startColor={"rgba(0,0,0)"} // warna awal shadow
-        offset={[27, 20]} // arah shadow [x, y]
+        offset={[25, 20]} // arah shadow [x, y]
         containerViewStyle={{ margin: 90 }}
       >
       <View style={{
@@ -136,10 +156,10 @@ export function Beranda() {
       <View style={{
         marginRight: 10
       }}>
-      <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(data, index)}/>
+      <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(data)}/>
       </View>
       <View>
-      <FontAwesome name='trash' size={19} onPress={()=>{handleDelete(index)}}/>
+      <FontAwesome name='trash' size={19} onPress={()=>{handleDelete(data.id)}}/>
       </View>
       </View>
       </View>
@@ -160,6 +180,8 @@ export function Beranda() {
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
+    
+    <View style={styles.containerInput}>
       <TextInput style={styles.input}
       placeholder="Enter Frasa"
       value={inputFrasa.toString()}
@@ -210,6 +232,7 @@ export function Beranda() {
     </View>
     </View>
     </View>
+    </View>
         </>
 
       }
@@ -222,6 +245,8 @@ export function Beranda() {
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
+    
+    <View style={styles.containerInput}>
       <TextInput style={styles.input}
       placeholder="Enter Frasa"
       onChangeText={(value)=>handleInput('frasa',value)}/>
@@ -268,6 +293,7 @@ export function Beranda() {
           marginTop: 14
         }}>Close</Text>
         </TouchableOpacity>
+    </View>
     </View>
     </View>
     </View>
@@ -335,5 +361,8 @@ const styles = StyleSheet.create({
   },
   confrasa: {
     marginLeft: 9
+  },
+  containerInput: {
+    marginTop: 300
   }
 });
