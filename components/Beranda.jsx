@@ -21,6 +21,7 @@ export function Beranda() {
   const [idItem, setIdItem] = useState(null)
   const [idEditItem, setIdEditItem] = useState(0)
   const [counter, setCounter] = useState(0)
+  const [buttonTambah, setTambahButton] = useState(true)
  
  
  useEffect(()=>{
@@ -40,7 +41,7 @@ export function Beranda() {
   const handlePress = ()=>{
     setCounter(prev=> prev + 1)
     setInputVisible(true)
-    
+    setTambahButton(false)
   }
   
   const handlePressAdd = ()=> {
@@ -56,12 +57,14 @@ export function Beranda() {
     getInsertSentence(frasa, translate)
     setCounter(prev => prev + 1)
     setInputVisible(false)
+    setTambahButton(true)
   }
   
   
   const handlePressClose = ()=>{
     setInputVisible(false)
     setInputEditVisible(false)
+    setTambahButton(true)
   }
   
   const handleDelete = (id)=>{
@@ -91,6 +94,7 @@ export function Beranda() {
     getEditSentence(varInputFrasa, varInputTranslate, idEditItem)
     setCounter(prev=> prev + 1)
     setInputEditVisible(false)
+    setTambahButton(true)
     
   }
   
@@ -100,6 +104,7 @@ export function Beranda() {
     setInputFrasa(data.frasa)
     setInputTranslate(data.translate)
     setInputEditVisible(true)
+    setTambahButton(false)
   }
   
 
@@ -112,16 +117,16 @@ export function Beranda() {
        {items.map((data, index)=>(
          <React.Fragment key={data.id}>
       <Shadow
-        style={{margin: 10}}
+        style={{margin: 10, width: 300,height: 70}}
         distance={1} // seberapa jauh bayangan
         startColor={"rgba(0,0,0)"} // warna awal shadow
-        offset={[25, 20]} // arah shadow [x, y]
+        offset={['10%', '30%']} // arah shadow [x, y]
         containerViewStyle={{ margin: 90 }}
       >
       <View style={{
-        width: 360,
-        flexDirection: 'row'
-      }} key={index}>
+        width: 395,
+        flexDirection: 'column'
+      }}>
       <View>
       <View style={styles.frasatranslate}>
       <View style={styles.frasplay}>
@@ -150,11 +155,11 @@ export function Beranda() {
       </View>
       <View style={{
         flexDirection: 'row',
-        marginLeft: -58,
-        marginTop: 32
+        marginLeft: '70%',
+        marginTop: -45,
       }}>
       <View style={{
-        marginRight: 10
+        marginRight: 9
       }}>
       <FontAwesome name='pencil' size={19} onPress={()=>handleEditOpen(data)}/>
       </View>
@@ -175,8 +180,8 @@ export function Beranda() {
      {inputEditVisible && 
         <>
  <View style={{
-      width: 600,
-      height: 1000,
+      width: '100%',
+      height: '100%',
       position: 'absolute',
       backgroundColor: '#161414b8'
     }}>
@@ -194,7 +199,7 @@ export function Beranda() {
       <View style={{
         flexDirection: 'row',
         margin: 7,
-        marginLeft: 80
+        marginLeft: '10%'
       }}>
       <View>
    <TouchableOpacity style={{
@@ -258,7 +263,7 @@ export function Beranda() {
       <View style={{
         flexDirection: 'row',
         margin: 7,
-        marginLeft: 80
+        marginLeft: '10%'
       }}>
       <View>
    <TouchableOpacity style={{
@@ -301,15 +306,15 @@ export function Beranda() {
       }
 
       
-    
-            <TouchableOpacity style={{
+            {buttonTambah && 
+             <TouchableOpacity style={{
           width: 60,
           height: 60,
           borderRadius: 7,
           backgroundColor: '#1a9f92',
           position: 'absolute',
-          top: 800,
-          left: 350,
+          top: '80%',
+          left: '70%',
           textAlign: 'center',
           alignItems: 'center'
         }} 
@@ -318,8 +323,9 @@ export function Beranda() {
           fontSize: 70,
           marginTop: -20
         }}>+</Text>
-        </TouchableOpacity>
-        <Text>{}</Text>
+        </TouchableOpacity>   
+            }
+           
         </>
   );
 }
@@ -327,20 +333,20 @@ export function Beranda() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f98b58',
-    marginTop: 6
+    backgroundColor: '#f98b58'
   },
   input: {
     borderRadius: 5,
     marginLeft: 50,
     backgroundColor: '#f2d18c',
-    width: 350,
+    width: '60%',
+    color: 'black',
     height: 45,
     marginTop: 30,
     borderWidth: 1
   },
   frasatranslate: {
-    width: 400,
+    width: '80%',
     flexDirection: 'row',
     color: 'red',
     borderWidth: 1,
@@ -363,6 +369,7 @@ const styles = StyleSheet.create({
     marginLeft: 9
   },
   containerInput: {
-    marginTop: 300
+    width: 460,
+    marginTop: '40%'
   }
 });

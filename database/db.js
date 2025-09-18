@@ -15,7 +15,7 @@ export const getAllSentence = async ()=>{
   const db = await openDb()
   
   try{
-  const allSentence = db.getAllAsync('SELECT * FROM sentence')
+  const allSentence = db.getAllAsync('SELECT * FROM sentence ORDER BY id DESC')
   return allSentence
   }catch(error){
     console.log(error)
