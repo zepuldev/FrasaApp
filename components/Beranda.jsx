@@ -124,7 +124,7 @@ export function Beranda() {
         containerViewStyle={{ margin: 90 }}
       >
       <View style={{
-        width: 395,
+        width: '130%',
         flexDirection: 'column'
       }}>
       <View>
